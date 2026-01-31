@@ -38,13 +38,7 @@ void kernel_main(void) {
 
     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
     screen_init(fb);
-    while(1){
-        for (int i = 0; i < 255; i++) {
-            screen_fill(rgbto32(i, i, i));
-        }
-        for (int i = 255; i >= 0; i--) {
-            screen_fill(rgbto32(i, i, i));
-        }
-    }
+    screen_setcolor(255, 255, 255);
+    screen_print("Welcome to my HobbyOS!");
     hcf();
 }

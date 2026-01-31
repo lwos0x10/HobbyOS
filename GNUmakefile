@@ -15,8 +15,9 @@ INC_DIR   := $(SRC_DIR)/include
 
 # User controllable toolchain
 TARGET := x86_64-elf
-CC := $(TARGET)-gcc
-LD := $(TARGET)-ld
+CC      := $(TARGET)-gcc
+LD      := $(TARGET)-ld
+OBJCOPY := $(TARGET)-objcopy
 
 # Compilation flags
 CFLAGS = -g -O2 -pipe \
@@ -38,12 +39,13 @@ CFLAGS = -g -O2 -pipe \
 LDFLAGS := -nostdlib -z max-page-size=0x1000 -T $(SRC_DIR)/linker/$(ARCH).lds
 
 # 1. Automatic Source Discovery (Recursive)
-# Finds all .c and .S files in src/kernel/ and its subdirectories
-SRCS := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.S')
+SRCS  := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.S')
+FONTS := $(shell find $(SRC_DIR) -name '*.psf')
 
 # 2. Object Mapping
-# Maps src/kernel/arch/x86_64/file.c -> build/src/kernel/arch/x86_64/file.c.o
+# This creates build/path/to/file.c.o and build/path/to/font.psf.o
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+OBJS += $(FONTS:%=$(BUILD_DIR)/%.o)
 
 # Default target
 .PHONY: all
@@ -55,6 +57,7 @@ $(BUILD_DIR)/$(OUTPUT): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 
 # --- Compilation Rules ---
+
 # Rule for C files
 $(BUILD_DIR)/%.c.o: %.c
 	@mkdir -p $(dir $@)
@@ -65,6 +68,11 @@ $(BUILD_DIR)/%.S.o: %.S
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Rule for PSF Font files (Converts binary font to ELF object)
+$(BUILD_DIR)/%.psf.o: %.psf
+	@mkdir -p $(dir $@)
+	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 $< $@
+
 # --- Image Creation (ISO) ---
 $(BUILD_DIR)/$(IMAGE_NAME).iso: $(BUILD_DIR)/$(OUTPUT) limine.conf
 	@mkdir -p $(BUILD_DIR)/iso_root/boot/limine
@@ -74,10 +82,10 @@ $(BUILD_DIR)/$(IMAGE_NAME).iso: $(BUILD_DIR)/$(OUTPUT) limine.conf
 	@mkdir -p $(BUILD_DIR)/iso_root/EFI/BOOT
 	cp limine/BOOTX64.EFI $(BUILD_DIR)/iso_root/EFI/BOOT/
 	xorriso -as mkisofs -b boot/limine/limine-bios-cd.bin \
-		-no-emul-boot -boot-load-size 4 -boot-info-table \
-		--efi-boot boot/limine/limine-uefi-cd.bin \
-		-efi-boot-part --efi-boot-image --protective-msdos-label \
-		$(BUILD_DIR)/iso_root -o $@
+	        -no-emul-boot -boot-load-size 4 -boot-info-table \
+	        --efi-boot boot/limine/limine-uefi-cd.bin \
+	        -efi-boot-part --efi-boot-image --protective-msdos-label \
+	        $(BUILD_DIR)/iso_root -o $@
 	./limine/limine bios-install $@
 
 # --- Utility Targets ---
