@@ -39,7 +39,7 @@ LDFLAGS := -nostdlib -z max-page-size=0x1000 -T $(SRC_DIR)/linker/$(ARCH).lds
 
 # 1. Automatic Source Discovery (Recursive)
 # Finds all .c and .S files in src/kernel/ and its subdirectories
-SRCS := $(shell find $(SRC_DIR)/kernel -name '*.c' -o -name '*.S')
+SRCS := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.S')
 
 # 2. Object Mapping
 # Maps src/kernel/arch/x86_64/file.c -> build/src/kernel/arch/x86_64/file.c.o

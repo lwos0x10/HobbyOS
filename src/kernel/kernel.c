@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <limine.h>
 #include <arch.h>
+#include <drivers/screen.h>
 
 // --- Limine Base Revision ---
 __attribute__((used, section(".limine_requests")))
@@ -24,15 +25,26 @@ static volatile uint64_t limine_requests_end_marker[] = LIMINE_REQUESTS_END_MARK
 
 // --- Kernel Entry Point ---
 void kernel_main(void) {
-    // Ensure the bootloader supports our base revision
+    // Validation Bootloader Revision
     if (LIMINE_BASE_REVISION_SUPPORTED(limine_base_revision) == false) {
         hcf();
     }
 
-    // Check if we have a valid framebuffer
+    // Validation Framebuffer
     if (framebuffer_request.response == NULL || 
         framebuffer_request.response->framebuffer_count < 1) {
         hcf();
+    }
+
+    struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
+    screen_init(fb);
+    while(1){
+        for (int i = 0; i < 255; i++) {
+            screen_fill(rgbto32(i, i, i));
+        }
+        for (int i = 255; i >= 0; i--) {
+            screen_fill(rgbto32(i, i, i));
+        }
     }
     hcf();
 }
