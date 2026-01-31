@@ -1,0 +1,22 @@
+# Build outputs
+.cache
+build/
+bin/
+*.iso
+*.o
+*.d
+
+# Limine binaries and submodules
+# Usually, you only want to track the configuration, not the compiled tools
+limine/
+!limine.conf
+
+# Editor/OS temporary files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Compilation Database (for LSP)
+compile_commands.json
