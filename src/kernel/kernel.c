@@ -3,8 +3,9 @@
 #include <stdbool.h>
 #include <limine.h>
 #include <arch.h>
+#include <lib/string.h>
 #include <drivers/screen.h>
-
+#include <lib/printf.h>
 // --- Limine Base Revision ---
 __attribute__((used, section(".limine_requests")))
 static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(4);
@@ -39,6 +40,10 @@ void kernel_main(void) {
     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
     screen_init(fb);
     screen_setcolor(255, 255, 255);
-    screen_print("Welcome to my HobbyOS!");
+    char character = 'A';
+    char string[] = "ABCD";
+    int pos_number = 123456;
+    int neg_number = -123456;
+    printf("%c\n%s\n%d\n%d\n", character, string, pos_number, neg_number);
     hcf();
 }
