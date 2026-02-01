@@ -30,12 +30,13 @@ CFLAGS = -g -O2 -pipe \
          -m64 \
          -march=x86-64 \
          -mno-80387 \
-         -mno-mmx \
-         -mno-sse \
-         -mno-sse2 \
+         -msse \
+         -msse2 \
+         -mfpmath=sse \
          -mno-red-zone \
          -mcmodel=kernel \
          -Isrc/include
+
 LDFLAGS := -nostdlib -z max-page-size=0x1000 -T $(SRC_DIR)/linker/$(ARCH).lds
 
 # 1. Automatic Source Discovery (Recursive)

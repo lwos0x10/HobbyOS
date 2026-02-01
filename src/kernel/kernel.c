@@ -6,6 +6,7 @@
 #include <lib/string.h>
 #include <drivers/screen.h>
 #include <lib/printf.h>
+
 // --- Limine Base Revision ---
 __attribute__((used, section(".limine_requests")))
 static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(4);
@@ -24,8 +25,12 @@ static volatile uint64_t limine_requests_start_marker[] = LIMINE_REQUESTS_START_
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end_marker[] = LIMINE_REQUESTS_END_MARKER;
 
+
+
 // --- Kernel Entry Point ---
 void kernel_main(void) {
+    enable_sse();
+
     // Validation Bootloader Revision
     if (LIMINE_BASE_REVISION_SUPPORTED(limine_base_revision) == false) {
         hcf();
@@ -44,6 +49,8 @@ void kernel_main(void) {
     char string[] = "ABCD";
     int pos_number = 123456;
     int neg_number = -123456;
+    double not_round = 1.0 / 3.0;
     printf("%c\n%s\n%d\n%d\n", character, string, pos_number, neg_number);
+    printf("%f", not_round);
     hcf();
 }

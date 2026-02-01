@@ -56,8 +56,26 @@ void printf(const char *fmt, ...) {
                     break;
                 }
                 case 'd': {
-                    char *s = itoa(va_arg(args, int));
-                    screen_print(s);
+                    char d = va_arg(args, int);
+                    screen_print(itoa(d));
+                    break;
+                }
+                case 'f': {
+                    double f = va_arg(args, double);
+
+                    if (f < 0) screen_putc('-');
+
+                    int ival = (int)f;
+                    int fval = (int)((f - ival) * 1000000 + 0.5);
+
+                    screen_print(itoa(ival));
+                    screen_putc('.');
+
+                    char *fstr = itoa(fval);
+                    int len = 0;
+                    while (fstr[len]) len++;
+                    for(int i = 0; i < len; i++) screen_putc(fstr[i]);
+                    
                     break;
                 }
                 case '%': {
