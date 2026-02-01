@@ -1,5 +1,6 @@
 #include <drivers/screen.h>
 #include <lib/printf.h>
+#include <stdint.h>
 
 char *itoa(int num) {
     static char buffer[64];
@@ -26,6 +27,33 @@ char *itoa(int num) {
         buffer[i++] = '-';
     }
     
+    buffer[i] = '\0';
+
+    for (int j = 0; j < i / 2; j++) {
+        char temp = buffer[j];
+        buffer[j] = buffer[i - j - 1];
+        buffer[i - j - 1] = temp;
+    }
+
+    return buffer;
+}
+
+char *htoa(uint64_t hex) {
+    char *clist = "0123456789ABCDEF";
+    static char buffer[64];
+    int i = 0;
+
+    if (hex == 0) {
+        buffer[i++] = '0';
+        buffer[i] = '\0';
+        return buffer; 
+    }
+
+    while (hex != 0) {
+        buffer[i++] = clist[hex % 16];
+        hex /= 16;
+    }
+
     buffer[i] = '\0';
 
     for (int j = 0; j < i / 2; j++) {
@@ -76,6 +104,11 @@ void printf(const char *fmt, ...) {
                     while (fstr[len]) len++;
                     for(int i = 0; i < len; i++) screen_putc(fstr[i]);
                     
+                    break;
+                }
+                case 'x': {
+                    uint64_t x = va_arg(args, uint64_t);
+                    screen_print(htoa(x));
                     break;
                 }
                 case '%': {

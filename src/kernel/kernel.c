@@ -50,7 +50,9 @@ void kernel_main(void) {
     int pos_number = 123456;
     int neg_number = -123456;
     double not_round = 1.0 / 3.0;
+    uint64_t hex_number = 0x123456ABCDEF;
     printf("%c\n%s\n%d\n%d\n", character, string, pos_number, neg_number);
-    printf("%f", not_round);
+    printf("%f\n", not_round);
+    printf("%x\n", hex_number);
     hcf();
 }
