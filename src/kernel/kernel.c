@@ -14,9 +14,13 @@ void kernel_main(void) {
         framebuffer_request.response->framebuffer_count < 1) {
         hcf();
     }
-
+    
+    // Initialize Screen
     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
     screen_init(fb);
     screen_setcolor(255, 255, 255);
+
+    gdt_init();
+
     hcf();
 }

@@ -40,7 +40,7 @@ CFLAGS = -g -O2 -pipe \
 LDFLAGS := -nostdlib -z max-page-size=0x1000 -T $(SRC_DIR)/linker/$(ARCH).lds
 
 # 1. Automatic Source Discovery (Recursive)
-SRCS  := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.S')
+SRCS  := $(shell find $(SRC_DIR) -name '*.c' -o -name '*.S' -o -name '*.asm')
 FONTS := $(shell find $(SRC_DIR) -name '*.psf')
 
 # 2. Object Mapping
@@ -68,6 +68,11 @@ $(BUILD_DIR)/%.c.o: %.c
 $(BUILD_DIR)/%.S.o: %.S
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule for Assembly (.asm) files
+$(BUILD_DIR)/%.asm.o: %.asm
+	@mkdir -p $(dir $@)
+	nasm -f elf64 $< -o $@
 
 # Rule for PSF Font files (Converts binary font to ELF object)
 $(BUILD_DIR)/%.psf.o: %.psf

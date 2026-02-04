@@ -17,6 +17,9 @@
 #include <lib/string.h>
 #include <lib/printf.h>
 
+// CPU
+#include <cpu/gdt.h>
+
 /*Initialize Operating System*/
 
 // --- Limine Base Revision ---
