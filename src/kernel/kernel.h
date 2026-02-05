@@ -19,6 +19,7 @@
 
 // CPU
 #include <cpu/gdt.h>
+#include <cpu/idt.h>
 
 /*Initialize Operating System*/
 

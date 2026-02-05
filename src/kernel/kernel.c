@@ -21,6 +21,7 @@ void kernel_main(void) {
     screen_setcolor(255, 255, 255);
 
     gdt_init();
+    idt_init();
 
     hcf();
 }
